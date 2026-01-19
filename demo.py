@@ -8,10 +8,13 @@ how the BDD scenarios translate to real code usage.
 import sys
 import os
 
-# Add src directory to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
+# Import calculator module - in a real project, install as a package
+# For this educational project, we use a simple path insertion
+project_root = os.path.abspath(os.path.dirname(__file__))
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
 
-from calculator import Calculator
+from src.calculator import Calculator
 
 
 def demo_basic_operations():

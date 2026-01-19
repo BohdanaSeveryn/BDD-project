@@ -6,13 +6,16 @@ demonstrating how Gherkin scenarios map to actual Python code.
 """
 
 from behave import given, when, then
-import sys
 import os
+import sys
 
-# Add the src directory to the path so we can import the calculator
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../src'))
+# Import calculator module - in a real project, install as a package
+# For this educational project, we use a simple path insertion
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
 
-from calculator import Calculator
+from src.calculator import Calculator
 
 
 @given('I have a calculator')

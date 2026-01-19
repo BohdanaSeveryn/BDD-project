@@ -51,6 +51,11 @@ cd BDD-project
 pip install -r requirements.txt
 ```
 
+Or install as a package (recommended for development):
+```bash
+pip install -e .
+```
+
 ### Running the Tests
 
 Execute all BDD scenarios:
