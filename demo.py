@@ -8,8 +8,9 @@ how the BDD scenarios translate to real code usage.
 import sys
 import os
 
-# Import calculator module - in a real project, install as a package
-# For this educational project, we use a simple path insertion
+# NOTE: This manual path manipulation is for educational purposes only.
+# In production, install the package properly: pip install -e .
+# This allows direct imports: from src.calculator import Calculator
 project_root = os.path.abspath(os.path.dirname(__file__))
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
