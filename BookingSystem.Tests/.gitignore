@@ -1,0 +1,91 @@
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio cache/options directory
+.vs/
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# Rider
+.idea/
+*.sln.iml
+*.rider
+
+# Visual Studio 2015/2017 cache/options
+.vs/
+
+# Files built by Visual Studio
+*.sln.docstates
+
+# NuGet
+.nuget/
+*.nupkg
+*.snupkg
+
+# Test Results
+TestResults/
+*.coverage
+*.coveragexml
+*.trx
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.user
+*.userprefs
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Output files
+out/
+dist/
+build/
+
+# IDE specific
+*.csproj.user
+.projectile
+
+# ReSharper
+_ReSharper*/
+*.DotSettings.user
+
+# dotCover
+.dotCover
+
+# Coverlet
+coverage.json
+*.coverage
+
+# TestCafe
+.testcafe
+
+# Local environment
+.env
+.env.local
+.env.*.local
