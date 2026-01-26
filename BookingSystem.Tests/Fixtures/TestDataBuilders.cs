@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Xunit;
-using System;
-using System.Collections.Generic;
 
 namespace BookingSystem.Tests.Fixtures;
 
