@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resident Login - Booking System</title>
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <div class="logo">📚 Booking System</div>
+        <a href="../index.html" class="btn btn-logout">← Back</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div style="min-height: calc(100vh - 80px); display: flex; justify-content: center; align-items: center;">
+      <div class="card" style="max-width: 450px; width: 100%;">
+        <h1 style="text-align: center; margin-bottom: 30px; color: var(--primary-dark);">Resident Login</h1>
+
+        <div id="alert-container"></div>
+
+        <form id="loginForm">
+          <div class="form-group">
+            <label for="apartmentNumber">Apartment Number</label>
+            <input 
+              type="text" 
+              id="apartmentNumber" 
+              name="apartmentNumber" 
+              placeholder="e.g., A-101" 
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input 
+              type="password" 
+              id="password" 
+              name="password" 
+              placeholder="Enter your password" 
+              required
+            >
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%; padding: 14px;" data-text="Login">
+            Login
+          </button>
+        </form>
+
+        <div style="text-align: center; margin-top: 20px;">
+          <p style="color: var(--text-light);">Don't have an account? 
+            <a href="resident-register.html" style="color: var(--primary-dark); font-weight: 600; text-decoration: none;">Register here</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/api-client.js"></script>
+  <script>
+    const form = document.getElementById('loginForm');
+    const alertContainer = document.getElementById('alert-container');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const apartmentNumber = document.getElementById('apartmentNumber').value;
+      const password = document.getElementById('password').value;
+      const submitBtn = form.querySelector('button[type="submit"]');
+
+      try {
+        setLoading(submitBtn, true);
+        const result = await ApiClient.loginResident(apartmentNumber, password);
+
+        // Check if account is activated
+        if (result.requiresActivation) {
+          SessionManager.setSession('resident-pending-activation', {
+            residentId: result.residentId,
+            apartmentNumber: apartmentNumber,
+            token: result.residentId
+          });
+          window.location.href = 'resident-activate.html';
+        } else {
+          SessionManager.setSession('resident', {
+            residentId: result.residentId,
+            apartmentNumber: apartmentNumber,
+            token: result.token
+          });
+          window.location.href = 'resident-dashboard.html';
+        }
+      } catch (error) {
+        setLoading(submitBtn, false);
+        const alert = document.createElement('div');
+        alert.className = 'alert alert-error';
+        alert.textContent = error.message;
+        alertContainer.innerHTML = '';
+        alertContainer.appendChild(alert);
+      }
+    });
+  </script>
+</body>
+</html>

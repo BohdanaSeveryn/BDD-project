@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Booking System</title>
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body onload="initDashboard()">
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <div class="logo">🔐 Admin Dashboard</div>
+        <div class="user-info">
+          <div class="user-name" id="userName">Admin</div>
+          <button class="btn btn-logout" onclick="logout()">Logout</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div style="padding: 40px 0;">
+      <!-- Quick Stats -->
+      <div class="grid grid-3 mb-40">
+        <div class="card" style="text-align: center;">
+          <div style="font-size: 32px; color: var(--primary-dark); margin-bottom: 10px;">📊</div>
+          <p style="color: var(--text-light); margin-bottom: 10px;">Total Bookings</p>
+          <div style="font-size: 28px; font-weight: 700; color: var(--primary-dark);" id="totalBookings">0</div>
+        </div>
+
+        <div class="card" style="text-align: center;">
+          <div style="font-size: 32px; color: var(--primary-dark); margin-bottom: 10px;">👥</div>
+          <p style="color: var(--text-light); margin-bottom: 10px;">Residents</p>
+          <div style="font-size: 28px; font-weight: 700; color: var(--primary-dark);" id="totalResidents">0</div>
+        </div>
+
+        <div class="card" style="text-align: center;">
+          <div style="font-size: 32px; color: var(--primary-dark); margin-bottom: 10px;">📅</div>
+          <p style="color: var(--text-light); margin-bottom: 10px;">Today's Bookings</p>
+          <div style="font-size: 28px; font-weight: 700; color: var(--primary-dark);" id="todayBookings">0</div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div style="display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid var(--border-color);">
+        <button class="tab-btn active" onclick="switchTab('bookings')" style="padding: 15px 20px; background: none; border: none; cursor: pointer; font-weight: 600; color: var(--text-light); border-bottom: 3px solid transparent;">
+          📋 Bookings
+        </button>
+        <button class="tab-btn" onclick="switchTab('residents')" style="padding: 15px 20px; background: none; border: none; cursor: pointer; font-weight: 600; color: var(--text-light); border-bottom: 3px solid transparent;">
+          👥 Residents
+        </button>
+      </div>
+
+      <!-- Bookings Tab -->
+      <div id="bookings-tab" class="tab-content">
+        <div class="card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2>All Bookings</h2>
+            <input type="date" id="filterDate" style="width: 200px;" onchange="loadBookings()">
+          </div>
+          <div id="alert-container"></div>
+          <div id="bookings-container">
+            <div style="text-align: center; padding: 40px;">
+              <div class="spinner" style="display: inline-block;"></div>
+              <p style="margin-top: 10px; color: var(--text-light);">Loading bookings...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Residents Tab -->
+      <div id="residents-tab" class="tab-content hidden">
+        <div class="card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2>Residents</h2>
+            <button class="btn btn-primary" onclick="showModal('newResidentModal')" style="padding: 10px 20px;">+ New Resident</button>
+          </div>
+          <div id="residents-container">
+            <div style="text-align: center; padding: 40px;">
+              <div class="spinner" style="display: inline-block;"></div>
+              <p style="margin-top: 10px; color: var(--text-light);">Loading residents...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- New Resident Modal -->
+  <div id="newResidentModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="modal-close" onclick="closeModal('newResidentModal')">&times;</button>
+        <h2>Create New Resident</h2>
+      </div>
+
+      <form id="newResidentForm">
+        <div class="form-group">
+          <label for="resName">Full Name</label>
+          <input type="text" id="resName" name="name" required>
+        </div>
+
+        <div class="form-group">
+          <label for="resEmail">Email</label>
+          <input type="email" id="resEmail" name="email" required>
+        </div>
+
+        <div class="form-group">
+          <label for="resPhone">Phone</label>
+          <input type="text" id="resPhone" name="phone" required>
+        </div>
+
+        <div class="form-group">
+          <label for="resApartment">Apartment Number</label>
+          <input type="text" id="resApartment" name="apartmentNumber" required>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+          <button type="submit" class="btn btn-primary" style="flex: 1;">Create Resident</button>
+          <button type="button" class="btn btn-secondary" style="flex: 1;" onclick="closeModal('newResidentModal')">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="../js/api-client.js"></script>
+  <script>
+    if (!requireLogin('admin')) throw new Error('Not logged in');
+
+    const userData = SessionManager.getUserData();
+    let currentTab = 'bookings';
+
+    function initDashboard() {
+      document.getElementById('userName').textContent = `Welcome, ${userData.username}`;
+      document.getElementById('filterDate').valueAsDate = new Date();
+      loadBookings();
+    }
+
+    function switchTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.getElementById(tab + '-tab').classList.remove('hidden');
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      event.target.classList.add('active');
+
+      if (tab === 'bookings') {
+        loadBookings();
+      } else {
+        loadResidents();
+      }
+    }
+
+    async function loadBookings() {
+      const container = document.getElementById('bookings-container');
+      const date = document.getElementById('filterDate').value;
+
+      try {
+        const bookings = await ApiClient.getAllBookings(userData.adminId, date);
+
+        if (bookings.length === 0) {
+          container.innerHTML = '<p style="text-align: center; color: var(--text-light);">No bookings found for this date</p>';
+          return;
+        }
+
+        let html = `
+          <table>
+            <thead>
+              <tr>
+                <th>Facility</th>
+                <th>Resident</th>
+                <th>Apartment</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+        `;
+
+        bookings.forEach(booking => {
+          const statusBadge = booking.status === 'Confirmed' 
+            ? '<span class="badge badge-success">✓ Confirmed</span>' 
+            : '<span class="badge badge-pending">Pending</span>';
+          
+          html += `
+            <tr>
+              <td>${booking.facility || 'Facility'}</td>
+              <td>${booking.residentName || 'Unknown'}</td>
+              <td>${booking.apartmentNumber || '-'}</td>
+              <td>${formatDate(booking.date)}</td>
+              <td>${formatTime(booking.time || '')}</td>
+              <td>${statusBadge}</td>
+              <td>
+                <button class="btn btn-danger" onclick="adminCancelBooking('${booking.id}')" style="padding: 6px 12px; font-size: 14px;">Cancel</button>
+              </td>
+            </tr>
+          `;
+        });
+
+        html += `
+            </tbody>
+          </table>
+        `;
+
+        container.innerHTML = html;
+        document.getElementById('todayBookings').textContent = bookings.length;
+      } catch (error) {
+        container.innerHTML = `<div class="alert alert-error">${error.message}</div>`;
+      }
+    }
+
+    async function loadResidents() {
+      const container = document.getElementById('residents-container');
+
+      try {
+        // Mock data - would need to call actual API
+        container.innerHTML = `
+          <p style="text-align: center; color: var(--text-light);">
+            Residents list would display here. Integrate with API to get real data.
+          </p>
+        `;
+      } catch (error) {
+        container.innerHTML = `<div class="alert alert-error">${error.message}</div>`;
+      }
+    }
+
+    async function adminCancelBooking(bookingId) {
+      if (confirm('Are you sure you want to cancel this booking?')) {
+        try {
+          await ApiClient.cancelAdminBooking(userData.adminId, bookingId, 'Cancelled by admin');
+          showAlert('Booking cancelled successfully', 'success');
+          await loadBookings();
+        } catch (error) {
+          showAlert(error.message, 'error');
+        }
+      }
+    }
+
+    document.getElementById('newResidentForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const data = {
+        name: document.getElementById('resName').value,
+        email: document.getElementById('resEmail').value,
+        phone: document.getElementById('resPhone').value,
+        apartmentNumber: document.getElementById('resApartment').value,
+      };
+
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+
+      try {
+        setLoading(submitBtn, true);
+        await ApiClient.createResident(userData.adminId, data);
+
+        closeModal('newResidentModal');
+        showAlert('Resident created successfully!', 'success');
+        document.getElementById('newResidentForm').reset();
+        await loadResidents();
+      } catch (error) {
+        showAlert(error.message, 'error');
+        setLoading(submitBtn, false);
+      }
+    });
+
+    function logout() {
+      SessionManager.clearSession();
+      window.location.href = '../index.html';
+    }
+  </script>
+
+  <style>
+    .tab-btn.active {
+      color: var(--primary-dark);
+      border-bottom-color: var(--primary-dark);
+    }
+
+    .tab-content.hidden {
+      display: none;
+    }
+  </style>
+</body>
+</html>

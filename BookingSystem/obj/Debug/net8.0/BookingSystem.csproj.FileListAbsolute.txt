@@ -1,0 +1,12 @@
+C:\Users\basev\Bohdana\OmaTehtava\BDD-project\BookingSystem\obj\Debug\net8.0\BookingSystem.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\basev\Bohdana\OmaTehtava\BDD-project\BookingSystem\obj\Debug\net8.0\BookingSystem.AssemblyInfoInputs.cache
+C:\Users\basev\Bohdana\OmaTehtava\BDD-project\BookingSystem\obj\Debug\net8.0\BookingSystem.AssemblyInfo.cs
+C:\Users\basev\Bohdana\OmaTehtava\BDD-project\BookingSystem\obj\Debug\net8.0\BookingSystem.csproj.CoreCompileInputs.cache
+C:\Users\basev\Bohdana\OmaTehtava\BDD-project\BookingSystem\obj\Debug\net8.0\BookingSystem.sourcelink.json
+C:\Users\basev\Bohdana\OmaTehtava\BDD-project\BookingSystem\bin\Debug\net8.0\BookingSystem.deps.json
+C:\Users\basev\Bohdana\OmaTehtava\BDD-project\BookingSystem\bin\Debug\net8.0\BookingSystem.dll
+C:\Users\basev\Bohdana\OmaTehtava\BDD-project\BookingSystem\bin\Debug\net8.0\BookingSystem.pdb
+C:\Users\basev\Bohdana\OmaTehtava\BDD-project\BookingSystem\obj\Debug\net8.0\BookingSystem.dll
+C:\Users\basev\Bohdana\OmaTehtava\BDD-project\BookingSystem\obj\Debug\net8.0\refint\BookingSystem.dll
+C:\Users\basev\Bohdana\OmaTehtava\BDD-project\BookingSystem\obj\Debug\net8.0\BookingSystem.pdb
+C:\Users\basev\Bohdana\OmaTehtava\BDD-project\BookingSystem\obj\Debug\net8.0\ref\BookingSystem.dll

@@ -1,0 +1,25 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Booking System API",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/BookingSystem.Api/bin/Debug/net8.0/BookingSystem.Api.dll",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}/BookingSystem.Api",
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "sourceLanguage": "csharp",
+      "requireExactSource": false,
+      "serverReadyAction": {
+        "pattern": "\\bApplication started|Started$",
+        "uriFormat": "http://localhost:5000/swagger",
+        "action": "openExternally"
+      }
+    }
+  ]
+}

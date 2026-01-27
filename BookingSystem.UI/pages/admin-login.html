@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login - Booking System</title>
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <div class="logo">📚 Booking System</div>
+        <a href="../index.html" class="btn btn-logout">← Back</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div style="min-height: calc(100vh - 80px); display: flex; justify-content: center; align-items: center;">
+      <div class="card" style="max-width: 450px; width: 100%;">
+        <h1 style="text-align: center; margin-bottom: 30px; color: var(--primary-dark);">Admin Login</h1>
+
+        <div id="alert-container"></div>
+
+        <!-- Step 1: Admin Credentials -->
+        <form id="adminLoginForm" class="step-form">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input 
+              type="text" 
+              id="username" 
+              name="username" 
+              placeholder="Enter admin username" 
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input 
+              type="password" 
+              id="password" 
+              name="password" 
+              placeholder="Enter admin password" 
+              required
+            >
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%; padding: 14px;" data-text="Next">
+            Next
+          </button>
+        </form>
+
+        <!-- Step 2: 2FA Code -->
+        <form id="twoFactorForm" class="step-form hidden">
+          <div style="background: var(--primary-light); padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
+            <p style="color: var(--primary-dark); margin: 0;">A 6-digit code has been sent to your email</p>
+          </div>
+
+          <div class="form-group">
+            <label for="twoFactorCode">Verification Code</label>
+            <input 
+              type="text" 
+              id="twoFactorCode" 
+              name="twoFactorCode" 
+              placeholder="Enter 6-digit code" 
+              maxlength="6"
+              required
+            >
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%; padding: 14px;" data-text="Verify & Login">
+            Verify & Login
+          </button>
+
+          <button type="button" class="btn btn-secondary" style="width: 100%; margin-top: 10px; padding: 14px;" onclick="goBackToLogin()">
+            Back
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/api-client.js"></script>
+  <script>
+    let adminId = null;
+
+    const loginForm = document.getElementById('adminLoginForm');
+    const twoFactorForm = document.getElementById('twoFactorForm');
+    const alertContainer = document.getElementById('alert-container');
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const submitBtn = loginForm.querySelector('button[type="submit"]');
+
+      try {
+        setLoading(submitBtn, true);
+        const result = await ApiClient.adminLogin(username, password);
+
+        adminId = result.adminId;
+
+        // Move to 2FA step
+        loginForm.classList.add('hidden');
+        twoFactorForm.classList.remove('hidden');
+        alertContainer.innerHTML = '';
+      } catch (error) {
+        setLoading(submitBtn, false);
+        const alert = document.createElement('div');
+        alert.className = 'alert alert-error';
+        alert.textContent = error.message;
+        alertContainer.innerHTML = '';
+        alertContainer.appendChild(alert);
+      }
+    });
+
+    twoFactorForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const code = document.getElementById('twoFactorCode').value;
+      const submitBtn = twoFactorForm.querySelector('button[type="submit"]');
+
+      try {
+        setLoading(submitBtn, true);
+        const result = await ApiClient.verify2FA(adminId, code);
+
+        SessionManager.setSession('admin', {
+          adminId: adminId,
+          username: document.getElementById('username').value,
+          token: result.token
+        });
+
+        window.location.href = 'admin-dashboard.html';
+      } catch (error) {
+        setLoading(submitBtn, false);
+        const alert = document.createElement('div');
+        alert.className = 'alert alert-error';
+        alert.textContent = error.message;
+        alertContainer.innerHTML = '';
+        alertContainer.appendChild(alert);
+      }
+    });
+
+    function goBackToLogin() {
+      twoFactorForm.classList.add('hidden');
+      loginForm.classList.remove('hidden');
+      alertContainer.innerHTML = '';
+      document.getElementById('username').value = '';
+      document.getElementById('password').value = '';
+      document.getElementById('twoFactorCode').value = '';
+      adminId = null;
+    }
+  </script>
+
+  <style>
+    .step-form.hidden {
+      display: none;
+    }
+  </style>
+</body>
+</html>

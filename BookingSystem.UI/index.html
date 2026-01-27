@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Booking System - Welcome</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="container">
+    <div style="min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+      <div style="text-align: center; margin-bottom: 60px;">
+        <h1 style="font-size: 48px; color: var(--primary-dark); margin-bottom: 15px;">🏢 Booking System</h1>
+        <p style="font-size: 18px; color: var(--text-light); margin-bottom: 30px;">
+          Manage your facility bookings easily and efficiently
+        </p>
+      </div>
+
+      <div class="grid grid-2" style="max-width: 800px;">
+        <!-- Resident Card -->
+        <div class="card" style="text-align: center;">
+          <div style="font-size: 48px; margin-bottom: 20px;">👤</div>
+          <h2 style="margin-bottom: 15px;">Resident</h2>
+          <p style="color: var(--text-light); margin-bottom: 25px;">
+            Login to your account to view and manage your bookings
+          </p>
+          <div style="display: flex; gap: 10px;">
+            <a href="pages/resident-login.html" class="btn btn-primary" style="flex: 1;">Login</a>
+            <a href="pages/resident-register.html" class="btn btn-secondary" style="flex: 1;">Register</a>
+          </div>
+        </div>
+
+        <!-- Admin Card -->
+        <div class="card" style="text-align: center;">
+          <div style="font-size: 48px; margin-bottom: 20px;">🔐</div>
+          <h2 style="margin-bottom: 15px;">Administrator</h2>
+          <p style="color: var(--text-light); margin-bottom: 25px;">
+            Admin login to manage residents and view all bookings
+          </p>
+          <a href="pages/admin-login.html" class="btn btn-primary" style="width: 100%;">Admin Login</a>
+        </div>
+      </div>
+
+      <!-- Status Check -->
+      <div style="margin-top: 60px; text-align: center;">
+        <p style="color: var(--text-light); margin-bottom: 15px;">API Status:</p>
+        <span id="status-badge" class="badge badge-pending">Checking...</span>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/api-client.js"></script>
+  <script>
+    // Check API status
+    ApiClient.getHealth()
+      .then(() => {
+        const badge = document.getElementById('status-badge');
+        badge.className = 'badge badge-success';
+        badge.textContent = '✓ API Online';
+      })
+      .catch(() => {
+        const badge = document.getElementById('status-badge');
+        badge.className = 'badge badge-cancelled';
+        badge.textContent = '✗ API Offline';
+      });
+  </script>
+</body>
+</html>

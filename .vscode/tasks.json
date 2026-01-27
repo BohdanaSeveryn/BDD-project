@@ -1,0 +1,34 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Start Booking System API",
+      "type": "shell",
+      "command": "dotnet",
+      "args": [
+        "run",
+        "--project",
+        "BookingSystem.Api/BookingSystem.Api.csproj"
+      ],
+      "isBackground": true,
+      "group": {
+        "kind": "none"
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always"
+      },
+      "problemMatcher": {
+        "pattern": {
+          "regexp": "^.*$",
+          "line": 0
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^info:.*Application started",
+          "endsPattern": "^.*Application started.*$"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+user@example.com
+.vs/
+bin/
+obj/
+*.user
+*.suo
+*.cache
+*.log
+*.trx

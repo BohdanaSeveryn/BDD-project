@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resident Register - Booking System</title>
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <div class="logo">📚 Booking System</div>
+        <a href="../index.html" class="btn btn-logout">← Back</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div style="min-height: calc(100vh - 80px); display: flex; justify-content: center; align-items: center;">
+      <div class="card" style="max-width: 450px; width: 100%;">
+        <h1 style="text-align: center; margin-bottom: 30px; color: var(--primary-dark);">Create Account</h1>
+
+        <div id="alert-container"></div>
+
+        <form id="registerForm">
+          <div class="form-group">
+            <label for="name">Full Name</label>
+            <input 
+              type="text" 
+              id="name" 
+              name="name" 
+              placeholder="Enter your full name" 
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input 
+              type="email" 
+              id="email" 
+              name="email" 
+              placeholder="your@email.com" 
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input 
+              type="text" 
+              id="phone" 
+              name="phone" 
+              placeholder="+1 (555) 000-0000" 
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="apartmentNumber">Apartment Number</label>
+            <input 
+              type="text" 
+              id="apartmentNumber" 
+              name="apartmentNumber" 
+              placeholder="e.g., A-101" 
+              required
+            >
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%; padding: 14px;" data-text="Register">
+            Register
+          </button>
+        </form>
+
+        <div style="text-align: center; margin-top: 20px;">
+          <p style="color: var(--text-light);">Already have an account? 
+            <a href="resident-login.html" style="color: var(--primary-dark); font-weight: 600; text-decoration: none;">Login here</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/api-client.js"></script>
+  <script>
+    const form = document.getElementById('registerForm');
+    const alertContainer = document.getElementById('alert-container');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const data = {
+        name: document.getElementById('name').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        apartmentNumber: document.getElementById('apartmentNumber').value,
+      };
+
+      const submitBtn = form.querySelector('button[type="submit"]');
+
+      try {
+        setLoading(submitBtn, true);
+        const result = await ApiClient.registerResident(data);
+
+        const alert = document.createElement('div');
+        alert.className = 'alert alert-success';
+        alert.textContent = '✓ Registration successful! Check your email for activation link.';
+        alertContainer.innerHTML = '';
+        alertContainer.appendChild(alert);
+
+        setTimeout(() => {
+          window.location.href = 'resident-login.html';
+        }, 2000);
+      } catch (error) {
+        setLoading(submitBtn, false);
+        const alert = document.createElement('div');
+        alert.className = 'alert alert-error';
+        alert.textContent = error.message;
+        alertContainer.innerHTML = '';
+        alertContainer.appendChild(alert);
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resident Dashboard - Booking System</title>
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body onload="initDashboard()">
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <div class="logo">📚 Booking System</div>
+        <div class="user-info">
+          <div class="user-name" id="userName">Welcome</div>
+          <button class="btn btn-logout" onclick="logout()">Logout</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div style="padding: 40px 0;">
+      <div class="grid grid-2 mb-40">
+        <!-- New Booking Card -->
+        <div class="card" style="text-align: center; cursor: pointer;" onclick="showModal('bookingModal')">
+          <div style="font-size: 48px; margin-bottom: 15px;">📅</div>
+          <h3 style="margin-bottom: 10px;">New Booking</h3>
+          <p style="color: var(--text-light);">Create a new facility booking</p>
+        </div>
+
+        <!-- My Bookings Card -->
+        <div class="card" style="text-align: center; cursor: pointer;" onclick="loadBookings()">
+          <div style="font-size: 48px; margin-bottom: 15px;">📋</div>
+          <h3 style="margin-bottom: 10px;">My Bookings</h3>
+          <p style="color: var(--text-light);">View your upcoming bookings</p>
+        </div>
+      </div>
+
+      <!-- Bookings Section -->
+      <div class="card">
+        <h2 style="margin-bottom: 25px;">My Bookings</h2>
+        <div id="alert-container"></div>
+        <div id="bookings-container">
+          <div style="text-align: center; padding: 40px;">
+            <div class="spinner" style="display: inline-block;"></div>
+            <p style="margin-top: 10px; color: var(--text-light);">Loading bookings...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- New Booking Modal -->
+  <div id="bookingModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="modal-close" onclick="closeModal('bookingModal')">&times;</button>
+        <h2>New Booking</h2>
+      </div>
+
+      <form id="bookingForm">
+        <div class="form-group">
+          <label for="facility">Facility</label>
+          <select id="facility" required>
+            <option value="">Select a facility</option>
+            <option value="1">Laundry Room A</option>
+            <option value="2">Laundry Room B</option>
+            <option value="3">Gym</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="bookingDate">Date</label>
+          <input type="date" id="bookingDate" required>
+        </div>
+
+        <div class="form-group">
+          <label for="timeSlot">Time Slot</label>
+          <select id="timeSlot" required>
+            <option value="">Loading available times...</option>
+          </select>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+          <button type="submit" class="btn btn-primary" style="flex: 1;">Confirm Booking</button>
+          <button type="button" class="btn btn-secondary" style="flex: 1;" onclick="closeModal('bookingModal')">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="../js/api-client.js"></script>
+  <script>
+    if (!requireLogin('resident')) throw new Error('Not logged in');
+
+    const userData = SessionManager.getUserData();
+
+    async function initDashboard() {
+      try {
+        const resident = await ApiClient.getResident(userData.residentId);
+        document.getElementById('userName').textContent = `Welcome, ${resident.name}`;
+        await loadBookings();
+      } catch (error) {
+        console.error('Failed to load dashboard:', error);
+      }
+    }
+
+    async function loadBookings() {
+      const container = document.getElementById('bookings-container');
+      try {
+        const today = new Date().toISOString().split('T')[0];
+        const bookings = await ApiClient.getUpcomingBookings(userData.residentId);
+
+        if (bookings.length === 0) {
+          container.innerHTML = '<p style="text-align: center; color: var(--text-light);">No upcoming bookings. <a href="#" onclick="showModal(\'bookingModal\'); return false;" style="color: var(--primary-dark);">Create one now!</a></p>';
+          return;
+        }
+
+        let html = `
+          <table>
+            <thead>
+              <tr>
+                <th>Facility</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+        `;
+
+        bookings.forEach(booking => {
+          const statusBadge = booking.status === 'Confirmed' 
+            ? '<span class="badge badge-success">✓ Confirmed</span>' 
+            : '<span class="badge badge-pending">Pending</span>';
+          
+          html += `
+            <tr>
+              <td>${booking.facility || 'Facility'}</td>
+              <td>${formatDate(booking.date)}</td>
+              <td>${formatTime(booking.time || '')}</td>
+              <td>${statusBadge}</td>
+              <td>
+                <button class="btn btn-danger" onclick="cancelBooking('${booking.id}')" style="padding: 6px 12px; font-size: 14px;">Cancel</button>
+              </td>
+            </tr>
+          `;
+        });
+
+        html += `
+            </tbody>
+          </table>
+        `;
+
+        container.innerHTML = html;
+      } catch (error) {
+        container.innerHTML = `<div class="alert alert-error">${error.message}</div>`;
+      }
+    }
+
+    async function cancelBooking(bookingId) {
+      if (confirm('Are you sure you want to cancel this booking?')) {
+        try {
+          await ApiClient.cancelBooking(bookingId, userData.residentId, 'Cancelled by resident');
+          showAlert('Booking cancelled successfully', 'success');
+          await loadBookings();
+        } catch (error) {
+          showAlert(error.message, 'error');
+        }
+      }
+    }
+
+    // Booking form submission
+    document.getElementById('bookingForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const facilityId = document.getElementById('facility').value;
+      const bookingDate = document.getElementById('bookingDate').value;
+      const timeSlotId = document.getElementById('timeSlot').value;
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+
+      try {
+        setLoading(submitBtn, true);
+        
+        const bookingData = {
+          residentId: userData.residentId,
+          facilityId: parseInt(facilityId),
+          date: bookingDate,
+          timeSlotId: timeSlotId,
+        };
+
+        await ApiClient.confirmBooking(bookingData);
+        
+        closeModal('bookingModal');
+        showAlert('Booking confirmed successfully!', 'success');
+        await loadBookings();
+      } catch (error) {
+        showAlert(error.message, 'error');
+        setLoading(submitBtn, false);
+      }
+    });
+
+    // Load time slots when date changes
+    document.getElementById('bookingDate').addEventListener('change', async () => {
+      const facility = document.getElementById('facility').value;
+      const date = document.getElementById('bookingDate').value;
+
+      if (!facility) return;
+
+      try {
+        const slots = await ApiClient.getAvailability(facility, date);
+        const select = document.getElementById('timeSlot');
+        select.innerHTML = '<option value="">Select time slot</option>';
+
+        slots.forEach(slot => {
+          if (slot.isAvailable) {
+            const option = document.createElement('option');
+            option.value = slot.id;
+            option.textContent = `${formatTime(slot.startTime)} - ${formatTime(slot.endTime)}`;
+            select.appendChild(option);
+          }
+        });
+
+        if (slots.filter(s => s.isAvailable).length === 0) {
+          select.innerHTML = '<option value="">No slots available</option>';
+        }
+      } catch (error) {
+        console.error('Failed to load time slots:', error);
+      }
+    });
+
+    function logout() {
+      SessionManager.clearSession();
+      window.location.href = '../index.html';
+    }
+  </script>
+</body>
+</html>
