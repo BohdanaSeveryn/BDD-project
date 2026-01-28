@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Varaa Aika - Varauspalvelu</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1>Varauspalvelu</h1>
+            <div class="nav-links">
+                <a href="booking.html">Varaa Aika</a>
+                <a href="my-bookings.html">Omat Varaukset</a>
+                <button id="logoutBtn" class="btn btn-logout">Kirjaudu Ulos</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2>Pesukonevaraus</h2>
+
+        <div class="booking-controls">
+            <input type="date" id="bookingDate" class="date-picker">
+        </div>
+
+        <div class="calendar-grid">
+            <div id="timeSlotContainer" class="time-slots">
+                <!-- Time slots will be loaded here -->
+            </div>
+        </div>
+
+        <div id="selectedSlotInfo" class="selected-slot-info">
+            <h3>Valittu Aika</h3>
+            <p id="selectedSlotDisplay"></p>
+            <button id="confirmBookingBtn" class="btn btn-success">Vahvista Varaus</button>
+            <button id="clearSelectionBtn" class="btn btn-secondary">Peruuta</button>
+        </div>
+
+        <div id="successMessage" class="success-message"></div>
+        <div id="errorMessage" class="error-message"></div>
+    </div>
+
+    <script src="js/api-client.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/booking.js"></script>
+</body>
+
+</html>

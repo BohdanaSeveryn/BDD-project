@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asukkaiden Hallinta - Varauspalvelu</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1>Ylläpitäjän Paneeli</h1>
+            <div class="nav-links">
+                <a href="admin-dashboard.html">Varaukset</a>
+                <a href="admin-residents.html">Asukkaat</a>
+                <button id="logoutBtn" class="btn btn-logout">Kirjaudu Ulos</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2>Asukkaiden Hallinta</h2>
+
+        <button id="addResidentBtn" class="btn btn-success">Lisää Asukas</button>
+
+        <div id="residentsTable" class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nimi</th>
+                        <th>Huoneisto</th>
+                        <th>Sähköposti</th>
+                        <th>Puhelinnumero</th>
+                        <th>Tila</th>
+                        <th>Toiminnot</th>
+                    </tr>
+                </thead>
+                <tbody id="residentTableBody">
+                    <!-- Residents will be loaded here -->
+                </tbody>
+            </table>
+        </div>
+
+        <div id="errorMessage" class="error-message"></div>
+        <div id="successMessage" class="success-message"></div>
+    </div>
+
+    <!-- Add/Edit Resident Modal -->
+    <div id="residentModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTitle">Lisää Asukas</h2>
+            <form id="residentForm">
+                <div class="form-group">
+                    <label for="name">Nimi</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Sähköposti</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="apartment">Huoneisto</label>
+                    <input type="text" id="apartment" name="apartment" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Puhelinnumero</label>
+                    <input type="tel" id="phone" name="phone" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Tallenna</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/api-client.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+
+</html>

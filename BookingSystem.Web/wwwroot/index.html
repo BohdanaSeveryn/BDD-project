@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Varauspalvelu - Kirjautuminen</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="logo">🏢</div>
+            <h1>Varauspalvelu</h1>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="apartmentNumber">Huoneistönumero</label>
+                    <input type="text" id="apartmentNumber" name="apartmentNumber" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Salasana</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full">Kirjaudu</button>
+            </form>
+
+            <div id="errorMessage" class="error-message"></div>
+
+            <p style="text-align: center; margin-top: 1rem; font-size: 0.9rem;">
+                <a href="#" style="color: var(--primary-color); text-decoration: none;">Unohditko salasanan?</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="js/api-client.js"></script>
+    <script src="js/auth.js"></script>
+</body>
+
+</html>

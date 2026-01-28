@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="fi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ylläpitäjän Kirjautuminen - Varauspalvelu</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <h1>Ylläpitäjän Paneeli</h1>
+
+            <form id="adminLoginForm">
+                <div class="form-group">
+                    <label for="username">Käyttäjänimi</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Salasana</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+
+                <div id="twoFactorSection" style="display: none;">
+                    <div class="form-group">
+                        <label for="twoFactorCode">2FA-koodi (kuusi numeroa)</label>
+                        <input type="text" id="twoFactorCode" name="twoFactorCode" maxlength="6" pattern="\d{6}">
+                    </div>
+                    <button type="button" id="verifyTwoFactorBtn" class="btn btn-primary btn-full">Vahvista 2FA</button>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full">Kirjaudu</button>
+            </form>
+
+            <div id="errorMessage" class="error-message"></div>
+        </div>
+    </div>
+
+    <script src="js/api-client.js"></script>
+    <script src="js/auth.js"></script>
+    <script>
+        // Diagnostic logging to help identify client-side issues
+        try {
+            console.log('admin-login.html loaded');
+            console.log('apiClient present:', typeof apiClient !== 'undefined');
+            const form = document.getElementById('adminLoginForm');
+            form?.addEventListener('submit', function (e) {
+                console.log('adminLoginForm submit fired');
+            });
+        } catch (err) {
+            console.error('Diagnostic script error:', err);
+            const errEl = document.getElementById('errorMessage');
+            if (errEl) errEl.textContent = 'Sivulla tapahtui virhe: ' + err.message;
+        }
+    </script>
+</body>
+
+</html>
