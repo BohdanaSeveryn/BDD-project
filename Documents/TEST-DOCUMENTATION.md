@@ -152,7 +152,7 @@ Testit kattavat seuraavat funktionaalisuudet:
 
 1. **Kloonaa projekti**
    ```bash
-   git clone https://github.com/eeroh/BDD-project.git
+   git clone <repository-url>
    cd BDD-project
    ```
 
@@ -196,8 +196,8 @@ Varmista, että portti 5000 on vapaa tai muuta appsettings.json:issa määritett
 ## Lisätiedot
 
 Katso myös:
-- [RUNNING-TESTS.md](BookingSystem.Tests/RUNNING-TESTS.md) - Yksityiskohtaiset testien suoritusohjeet
-- [README.md](README.md) - Projektin yleiset tiedot
+- [RUNNING-TESTS.md](../BookingSystem.Tests/RUNNING-TESTS.md) - Yksityiskohtaiset testien suoritusohjeet
+- [README.md](../README.md) - Projektin yleiset tiedot
 - [BDD-GUIDE.md](BDD-GUIDE.md) - BDD-lähestymistavan dokumentaatio
 
 ## Testikehitys

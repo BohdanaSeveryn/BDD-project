@@ -108,7 +108,8 @@ BDD-project/
 
 1. **Clone the repository**
 ```bash
-cd c:\Users\eeroh\Documents\GitHub\BDD-project
+git clone <repository-url>
+cd BDD-project
 ```
 
 2. **Restore NuGet packages**
@@ -132,7 +133,7 @@ dotnet ef database update
 dotnet run
 ```
 
-The application will be available at: **https://localhost:7001**
+The application will be available at: **http://localhost:5000**
 
 ## 🧪 Running Tests
 
@@ -244,8 +245,8 @@ Create residents through the admin panel or tests.
 
 ## 📚 Documentation
 
-- [BUILD_GUIDE.md](BUILD_GUIDE.md) - Complete implementation specification
-- [IMPLEMENTATION-GUIDE.md](IMPLEMENTATION-GUIDE.md) - Setup and deployment instructions
+- [BUILD_GUIDE.md](Documents/BUILD_GUIDE.md) - Complete implementation specification
+- [IMPLEMENTATION-GUIDE.md](Documents/IMPLEMENTATION-GUIDE.md) - Setup and deployment instructions
 - Test files in `BookingSystem.Tests/Features/` - Expected behavior examples
 
 ## 🐛 Troubleshooting
@@ -256,17 +257,17 @@ Create residents through the admin panel or tests.
 # For LocalDB, use: (localdb)\mssqllocaldb
 ```
 
-### Port 7001 Already in Use
-Edit `Program.cs` to use a different port or terminate the process:
+### Port 5000 Already in Use
+Edit `launchSettings.json` to use a different port or terminate the process:
 ```powershell
-netstat -ano | findstr :7001
+netstat -ano | findstr :5000
 taskkill /PID <PID> /F
 ```
 
 ### CORS Errors
 Ensure API client URL matches server URL in `wwwroot/js/api-client.js`:
 ```javascript
-const apiClient = new ApiClient('https://localhost:7001/api');
+const apiClient = new ApiClient('http://localhost:5000/api');
 ```
 
 ## 📦 Deployment
@@ -284,10 +285,7 @@ dotnet publish -c Release -o ./publish
 
 ## 👥 Development Team
 
-- Anni Myllyniemi
-- Usama Shahla
-- Eero Hirsimäki
-- Bohdana Severyn
+Built by a dedicated development team.
 
 ## 📄 License
 
@@ -322,7 +320,7 @@ Educational project - BDD Development Exercise
 
 For questions or issues:
 1. Review test specifications in `BookingSystem.Tests/Features/`
-2. Check detailed implementation in [BUILD_GUIDE.md](BUILD_GUIDE.md)
+2. Check detailed implementation in [BUILD_GUIDE.md](Documents/BUILD_GUIDE.md)
 3. Refer to API documentation in controllers
 4. Check configuration in `appsettings.json`
 

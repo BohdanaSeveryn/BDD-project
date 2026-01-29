@@ -216,7 +216,8 @@ I have successfully built the complete **Building Facility Booking System** from
 
 ```bash
 # Navigate to project
-cd c:\Users\eeroh\Documents\GitHub\BDD-project
+git clone <repository-url>
+cd BDD-project
 
 # Restore packages
 dotnet restore
@@ -233,7 +234,7 @@ cd ..
 dotnet run
 ```
 
-**Application available at:** `https://localhost:7001`
+**Application available at:** `http://localhost:5000`
 
 ### Run Tests
 ```bash
@@ -387,8 +388,8 @@ wwwroot/
    ```
 
 5. **Access the Application**
-   - Resident: `https://localhost:7001/`
-   - Admin: `https://localhost:7001/admin-login.html`
+   - Resident: `http://localhost:5000/`
+   - Admin: `http://localhost:5000/admin-login.html`
 
 ---
 
@@ -424,4 +425,4 @@ The application is **production-ready** and can now be:
 
 *Built following BDD (Behavior-Driven Development) methodology*  
 *Implementation based on comprehensive BUILD_GUIDE.md specification*  
-*Developers: Anni Myllyniemi, Usama Shahla, Eero Hirsimäki, Bohdana Severyn*
+*Built by a dedicated development team*

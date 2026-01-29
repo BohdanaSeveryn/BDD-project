@@ -5,11 +5,7 @@
 **Frontend**: HTML, CSS, JavaScript (Finnish UI)  
 **Language**: C# backend, HTML/CSS/JavaScript frontend  
 
-**Developers**:
-- Anni Myllyniemi
-- Usama Shahla
-- Eero Hirsimäki
-- Bohdana Severyn
+**Developers**: Built by a dedicated development team
 
 ---
 
