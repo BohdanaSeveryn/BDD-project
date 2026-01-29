@@ -307,7 +307,8 @@ dotnet publish -c Release
 
 1. **Navigate to project**
    ```bash
-   cd c:\Users\eeroh\Documents\GitHub\BDD-project
+   git clone <repository-url>
+   cd BDD-project
    ```
 
 2. **Restore packages**
@@ -333,8 +334,8 @@ dotnet publish -c Release
    ```
 
 6. **Access application**
-   - Resident: https://localhost:7001/
-   - Admin: https://localhost:7001/admin-login.html
+   - Resident: http://localhost:5000/
+   - Admin: http://localhost:5000/admin-login.html
 
 ---
 

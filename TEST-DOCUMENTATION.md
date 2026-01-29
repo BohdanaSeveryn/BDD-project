@@ -152,7 +152,7 @@ Testit kattavat seuraavat funktionaalisuudet:
 
 1. **Kloonaa projekti**
    ```bash
-   git clone https://github.com/eeroh/BDD-project.git
+   git clone <repository-url>
    cd BDD-project
    ```
 

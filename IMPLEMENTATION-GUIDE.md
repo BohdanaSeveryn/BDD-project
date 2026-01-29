@@ -13,10 +13,11 @@ This document provides instructions for building and running the Building Facili
 
 ## Building the Project
 
-### 1. Restore NuGet Packages
+### 1. Clone the Repository and Restore NuGet Packages
 
 ```bash
-cd c:\Users\eeroh\Documents\GitHub\BDD-project
+git clone <repository-url>
+cd BDD-project
 dotnet restore
 ```
 
@@ -44,7 +45,7 @@ dotnet ef database update
 dotnet run
 ```
 
-The application will be available at `https://localhost:7001`
+The application will be available at `http://localhost:5000`
 
 ## Running Tests
 
@@ -152,7 +153,7 @@ dotnet ef database update
 ```
 
 ### Port Already in Use
-Edit `Program.cs` to use a different port, or kill the process using port 7001.
+Edit `launchSettings.json` to use a different port, or kill the process using port 5000.
 
 ### CORS Errors
 Ensure the API client URL matches the server URL in `wwwroot/js/api-client.js`.

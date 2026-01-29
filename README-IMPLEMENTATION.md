@@ -108,7 +108,8 @@ BDD-project/
 
 1. **Clone the repository**
 ```bash
-cd c:\Users\eeroh\Documents\GitHub\BDD-project
+git clone <repository-url>
+cd BDD-project
 ```
 
 2. **Restore NuGet packages**
@@ -132,7 +133,7 @@ dotnet ef database update
 dotnet run
 ```
 
-The application will be available at: **https://localhost:7001**
+The application will be available at: **http://localhost:5000**
 
 ## 🧪 Running Tests
 
@@ -256,17 +257,17 @@ Create residents through the admin panel or tests.
 # For LocalDB, use: (localdb)\mssqllocaldb
 ```
 
-### Port 7001 Already in Use
-Edit `Program.cs` to use a different port or terminate the process:
+### Port 5000 Already in Use
+Edit `launchSettings.json` to use a different port or terminate the process:
 ```powershell
-netstat -ano | findstr :7001
+netstat -ano | findstr :5000
 taskkill /PID <PID> /F
 ```
 
 ### CORS Errors
 Ensure API client URL matches server URL in `wwwroot/js/api-client.js`:
 ```javascript
-const apiClient = new ApiClient('https://localhost:7001/api');
+const apiClient = new ApiClient('http://localhost:5000/api');
 ```
 
 ## 📦 Deployment
@@ -284,10 +285,7 @@ dotnet publish -c Release -o ./publish
 
 ## 👥 Development Team
 
-- Anni Myllyniemi
-- Usama Shahla
-- Eero Hirsimäki
-- Bohdana Severyn
+Built by a dedicated development team.
 
 ## 📄 License
 
