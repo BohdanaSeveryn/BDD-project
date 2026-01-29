@@ -220,9 +220,9 @@ dotnet test --filter "AuthenticationTests"
 
 ## 📖 Documentation
 
-- **[README.md](./README.md)** - Main documentation and structure
-- **[RUNNING-TESTS.md](./RUNNING-TESTS.md)** - Test execution instructions
-- **[BDD-GUIDE.md](../BDD-GUIDE.md)** - BDD approach guide
+- **[README.md](../README.md)** - Main documentation and structure
+- **[RUNNING-TESTS.md](../BookingSystem.Tests/RUNNING-TESTS.md)** - Test execution instructions
+- **[BDD-GUIDE.md](BDD-GUIDE.md)** - BDD approach guide
 - **Code** - Well-documented test methods with DisplayName
 
 ## 🎓 BDD Approach

@@ -245,8 +245,8 @@ Create residents through the admin panel or tests.
 
 ## 📚 Documentation
 
-- [BUILD_GUIDE.md](BUILD_GUIDE.md) - Complete implementation specification
-- [IMPLEMENTATION-GUIDE.md](IMPLEMENTATION-GUIDE.md) - Setup and deployment instructions
+- [BUILD_GUIDE.md](Documents/BUILD_GUIDE.md) - Complete implementation specification
+- [IMPLEMENTATION-GUIDE.md](Documents/IMPLEMENTATION-GUIDE.md) - Setup and deployment instructions
 - Test files in `BookingSystem.Tests/Features/` - Expected behavior examples
 
 ## 🐛 Troubleshooting
@@ -320,7 +320,7 @@ Educational project - BDD Development Exercise
 
 For questions or issues:
 1. Review test specifications in `BookingSystem.Tests/Features/`
-2. Check detailed implementation in [BUILD_GUIDE.md](BUILD_GUIDE.md)
+2. Check detailed implementation in [BUILD_GUIDE.md](Documents/BUILD_GUIDE.md)
 3. Refer to API documentation in controllers
 4. Check configuration in `appsettings.json`
 
