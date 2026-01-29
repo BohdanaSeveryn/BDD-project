@@ -28,6 +28,8 @@ public interface IAdminService
     Task<List<BookingCalendarItem>> GetBookingsByDateRangeAsync(DateTime startDate, DateTime endDate);
     Task<AdminBookingDetails> GetBookingDetailsAsync(Guid bookingId);
     Task<bool> CancelBookingAsync(AdminCancellationRequest request);
+    Task<GenerateTimeSlotsResult> GenerateDailyTimeSlotsAsync(GenerateTimeSlotsRequest request);
+    Task<List<FacilityItem>> GetFacilitiesAsync();
 }
 
 public interface IBookingService
@@ -45,6 +47,7 @@ public interface IBookingService
     Task<bool> CancelBookingAsync(Guid bookingId, Guid residentId);
     Task<bool> CanCancelBookingAsync(Guid bookingId);
     Task<bool> CanResidentCancelBookingAsync(Guid bookingId, Guid residentId);
+    Task<List<FacilityItem>> GetFacilitiesAsync();
 }
 
 public interface IEmailService
@@ -181,6 +184,13 @@ public class BookingCalendarItem
     public string DataError { get; set; }
 }
 
+public class FacilityItem
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; }
+    public string Icon { get; set; }
+}
+
 public class BookingConfirmationEmail
 {
     public string ResidentEmail { get; set; }
@@ -209,6 +219,24 @@ public class AdminCancellationRequest
     public Guid BookingId { get; set; }
     public string Reason { get; set; }
     public Guid AdminId { get; set; }
+}
+
+public class GenerateTimeSlotsRequest
+{
+    public Guid AdminId { get; set; }
+    public Guid FacilityId { get; set; }
+    public DateTime Date { get; set; }
+    public string StartTime { get; set; }
+    public string EndTime { get; set; }
+}
+
+public class GenerateTimeSlotsResult
+{
+    public Guid FacilityId { get; set; }
+    public DateTime Date { get; set; }
+    public int CreatedCount { get; set; }
+    public int SkippedCount { get; set; }
+    public List<TimeSlot> Slots { get; set; } = new();
 }
 
 public class CreateBookingRequest

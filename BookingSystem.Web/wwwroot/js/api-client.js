@@ -21,6 +21,10 @@ class ApiClient {
             ...options.headers
         };
 
+        if (!this.token) {
+            this.token = localStorage.getItem('adminToken') || localStorage.getItem('token');
+        }
+
         if (this.token) {
             headers['Authorization'] = `Bearer ${this.token}`;
         }
@@ -32,9 +36,16 @@ class ApiClient {
                 body: options.body ? JSON.stringify(options.body) : undefined
             });
 
-            const data = await response.json();
+            let data = null;
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+                const text = await response.text();
+                data = text ? JSON.parse(text) : null;
+            }
+
             if (!response.ok) {
-                throw new Error(data.errorMessage || `HTTP Error: ${response.status}`);
+                const errorMessage = data?.errorMessage || `HTTP Error: ${response.status}`;
+                throw new Error(errorMessage);
             }
             return data;
         } catch (error) {
@@ -62,6 +73,10 @@ class ApiClient {
             method: 'POST',
             body: { password }
         });
+    }
+
+    async getFacilities() {
+        return this.request('/bookings/facilities');
     }
 
     async getAvailability(facilityId, date) {
@@ -100,6 +115,18 @@ class ApiClient {
         return this.request(`/admin/bookings/${bookingId}/cancel`, {
             method: 'DELETE',
             body: { bookingId, reason }
+        });
+    }
+
+    async getAdminFacilities() {
+        return this.request('/admin/facilities');
+    }
+
+    async generateDailyTimeSlots(facilityId, date, startTime, endTime) {
+        const dateStr = date.toISOString().split('T')[0];
+        return this.request('/admin/time-slots/generate', {
+            method: 'POST',
+            body: { facilityId, date: dateStr, startTime, endTime }
         });
     }
 

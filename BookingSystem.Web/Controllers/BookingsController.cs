@@ -1,7 +1,9 @@
 using BookingSystem.Web.DTOs;
 using BookingSystem.Web.Services;
+using BookingSystem.Web.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookingSystem.Web.Controllers;
 
@@ -10,10 +12,30 @@ namespace BookingSystem.Web.Controllers;
 public class BookingsController : ControllerBase
 {
     private readonly IBookingService _bookingService;
+    private readonly AppDbContext _context;
 
-    public BookingsController(IBookingService bookingService)
+    public BookingsController(IBookingService bookingService, AppDbContext context)
     {
         _bookingService = bookingService;
+        _context = context;
+    }
+
+    [HttpGet("facilities")]
+    public async Task<ActionResult<List<FacilityResponse>>> GetFacilities()
+    {
+        var facilities = await _context.Facilities
+            .Where(f => f.IsAvailable)
+            .OrderBy(f => f.Name)
+            .Select(f => new FacilityResponse
+            {
+                Id = f.Id,
+                Name = f.Name,
+                Description = f.Description,
+                Icon = f.Icon
+            })
+            .ToListAsync();
+
+        return Ok(facilities);
     }
 
     [HttpGet("availability")]

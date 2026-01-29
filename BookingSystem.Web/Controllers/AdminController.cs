@@ -87,4 +87,27 @@ public class AdminController : ControllerBase
 
         return Ok(new { message = "Asukas poistettu onnistuneesti" });
     }
+
+    [HttpGet("facilities")]
+    public async Task<ActionResult<List<FacilityResponse>>> GetFacilities()
+    {
+        var facilities = await _adminService.GetFacilitiesAsync();
+        return Ok(facilities);
+    }
+
+    [HttpPost("time-slots/generate")]
+    public async Task<ActionResult<GenerateTimeSlotsResponse>> GenerateDailyTimeSlots([FromBody] GenerateTimeSlotsRequest request)
+    {
+        if (request == null || request.FacilityId == Guid.Empty)
+            return BadRequest(new { errorMessage = "FacilityId is required" });
+
+        if (!TimeOnly.TryParse(request.StartTime, out var startTime) || !TimeOnly.TryParse(request.EndTime, out var endTime))
+            return BadRequest(new { errorMessage = "StartTime and EndTime are required (HH:mm)" });
+
+        var result = await _adminService.GenerateDailyTimeSlotsAsync(request.FacilityId, request.Date, startTime, endTime);
+        if (result == null)
+            return BadRequest(new { errorMessage = "Invalid time range or facility not found" });
+
+        return Ok(result);
+    }
 }

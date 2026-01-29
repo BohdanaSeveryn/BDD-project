@@ -120,6 +120,41 @@ public class TimeSlotResponse
     public string Color { get; set; } = string.Empty;
 }
 
+public class GenerateTimeSlotsRequest
+{
+    public Guid FacilityId { get; set; }
+    public DateTime Date { get; set; }
+    public string StartTime { get; set; } = string.Empty;
+    public string EndTime { get; set; } = string.Empty;
+}
+
+public class FacilityResponse
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string? Description { get; set; }
+    public string? Icon { get; set; }
+}
+
+public class AdminTimeSlotResponse
+{
+    public Guid Id { get; set; }
+    public DateTime Date { get; set; }
+    public TimeOnly StartTime { get; set; }
+    public TimeOnly EndTime { get; set; }
+    public string Status { get; set; } = string.Empty;
+    public string Color { get; set; } = string.Empty;
+}
+
+public class GenerateTimeSlotsResponse
+{
+    public Guid FacilityId { get; set; }
+    public DateTime Date { get; set; }
+    public int CreatedCount { get; set; }
+    public int SkippedCount { get; set; }
+    public List<AdminTimeSlotResponse> Slots { get; set; } = new();
+}
+
 public class AdminCancellationRequest
 {
     public Guid BookingId { get; set; }

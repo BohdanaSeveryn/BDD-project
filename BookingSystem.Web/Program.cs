@@ -74,14 +74,18 @@ using (var scope = app.Services.CreateScope())
         db.Database.Migrate();
         Console.WriteLine("Database migration completed.");
 
+        db.Database.ExecuteSqlRaw("DROP INDEX IF EXISTS IX_TimeSlots_FacilityId_Date;");
+        db.Database.ExecuteSqlRaw("CREATE UNIQUE INDEX IF NOT EXISTS IX_TimeSlots_FacilityId_Date_StartTime_EndTime ON TimeSlots (FacilityId, Date, StartTime, EndTime);");
+
         // Seed default admin account if it doesn't exist
-        if (!db.Admins.Any(a => a.Username == "admin"))
+        var existingAdmin = db.Admins.FirstOrDefault(a => a.Username == "admin");
+        if (existingAdmin == null)
         {
             Console.WriteLine("Creating default admin account...");
             var adminId = Guid.NewGuid();
             var hashedPassword = passwordHasher.HashPassword("Admin@123");
 
-            db.Admins.Add(new BookingSystem.Web.Models.Admin
+            existingAdmin = new BookingSystem.Web.Models.Admin
             {
                 Id = adminId,
                 Username = "admin",
@@ -90,7 +94,8 @@ using (var scope = app.Services.CreateScope())
                 TwoFactorEnabled = false,
                 IsActive = true,
                 CreatedAt = DateTime.UtcNow
-            });
+            };
+            db.Admins.Add(existingAdmin);
 
             db.SaveChanges();
             Console.WriteLine("Default admin account created successfully.");
@@ -98,8 +103,72 @@ using (var scope = app.Services.CreateScope())
         }
         else
         {
-            Console.WriteLine("Admin account already exists.");
+            existingAdmin.PasswordHash = passwordHasher.HashPassword("Admin@123");
+            existingAdmin.TwoFactorEnabled = false;
+            existingAdmin.IsActive = true;
+            existingAdmin.UpdatedAt = DateTime.UtcNow;
+            db.SaveChanges();
+            Console.WriteLine("Admin account updated: username=admin, password=Admin@123");
         }
+
+        var facilities = db.Facilities.ToList();
+        var sauna = facilities.FirstOrDefault(f => f.Name == "Sauna");
+        if (sauna == null)
+        {
+            sauna = new BookingSystem.Web.Models.Facility
+            {
+                Id = Guid.NewGuid(),
+                Name = "Sauna",
+                Description = "Taloyhtiön sauna",
+                Icon = "🧖",
+                IsAvailable = true,
+                CreatedAt = DateTime.UtcNow
+            };
+            db.Facilities.Add(sauna);
+            facilities.Add(sauna);
+        }
+        else
+        {
+            sauna.Description = "Taloyhtiön sauna";
+            sauna.Icon = "🧖";
+            sauna.IsAvailable = true;
+            sauna.UpdatedAt = DateTime.UtcNow;
+        }
+
+        var washer = facilities.FirstOrDefault(f => f.Name == "Pesukone 1" || f.Name == "Pyykinpesukone 1" || f.Name == "Пральна машина 1" || f.Name == "Пральна машина 2" || f.Name == "Kuntosali");
+        if (washer == null)
+        {
+            washer = new BookingSystem.Web.Models.Facility
+            {
+                Id = Guid.NewGuid(),
+                Name = "Pesukone 1",
+                Description = "Taloyhtiön pesukone",
+                Icon = "🧺",
+                IsAvailable = true,
+                CreatedAt = DateTime.UtcNow
+            };
+            db.Facilities.Add(washer);
+            facilities.Add(washer);
+        }
+        else
+        {
+            washer.Name = "Pesukone 1";
+            washer.Description = "Taloyhtiön pesukone";
+            washer.Icon = "🧺";
+            washer.IsAvailable = true;
+            washer.UpdatedAt = DateTime.UtcNow;
+        }
+
+        foreach (var facility in facilities)
+        {
+            if (facility.Id == sauna.Id || facility.Id == washer.Id)
+                continue;
+
+            facility.IsAvailable = false;
+            facility.UpdatedAt = DateTime.UtcNow;
+        }
+
+        db.SaveChanges();
     }
     catch (Exception ex)
     {

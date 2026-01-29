@@ -42,7 +42,7 @@ public class AppDbContext : DbContext
 
         // TimeSlots configuration
         modelBuilder.Entity<TimeSlot>()
-            .HasIndex(t => new { t.FacilityId, t.Date })
+            .HasIndex(t => new { t.FacilityId, t.Date, t.StartTime, t.EndTime })
             .IsUnique();
         modelBuilder.Entity<TimeSlot>()
             .HasOne(t => t.Facility)
