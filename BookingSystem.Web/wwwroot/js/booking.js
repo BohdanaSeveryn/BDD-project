@@ -1,11 +1,18 @@
 let selectedSlotId = null;
 let selectedFacilityId = null;
+let facilities = [];
 
 document.addEventListener('DOMContentLoaded', function () {
     const bookingDate = document.getElementById('bookingDate');
     const timeSlotContainer = document.getElementById('timeSlotContainer');
     const confirmBookingBtn = document.getElementById('confirmBookingBtn');
     const clearSelectionBtn = document.getElementById('clearSelectionBtn');
+    const facilityContainer = document.getElementById('facilityContainer');
+
+    const residentToken = localStorage.getItem('residentToken');
+    if (residentToken) {
+        apiClient.setToken(residentToken);
+    }
 
     if (bookingDate) {
         const today = new Date().toISOString().split('T')[0];
@@ -16,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
         confirmBookingBtn?.addEventListener('click', confirmBooking);
         clearSelectionBtn?.addEventListener('click', clearSelection);
 
-        loadAvailability();
+        loadFacilities().then(() => loadAvailability());
     }
 
     if (window.location.pathname.includes('my-bookings.html')) {
@@ -24,11 +31,58 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
+async function loadFacilities() {
+    const facilityContainer = document.getElementById('facilityContainer');
+    const errorMessage = document.getElementById('errorMessage');
+
+    if (!facilityContainer) {
+        return;
+    }
+
+    try {
+        facilities = await apiClient.getFacilities();
+        if (facilities && facilities.length > 0) {
+            facilityContainer.innerHTML = '';
+            facilities.forEach((facility, index) => {
+                const card = document.createElement('div');
+                card.className = 'facility-card';
+                card.dataset.facilityId = facility.id;
+                card.innerHTML = `
+                    <div class="icon">${facility.icon ?? '🧺'}</div>
+                    <div class="name">${facility.name}</div>
+                `;
+                card.addEventListener('click', () => selectFacility(facility.id));
+                facilityContainer.appendChild(card);
+
+                if (index === 0) {
+                    selectFacility(facility.id);
+                }
+            });
+        } else {
+            facilityContainer.innerHTML = '<p>Ei saatavilla olevia tiloja</p>';
+        }
+    } catch (error) {
+        showError(errorMessage, 'Tilojen lataaminen epäonnistui: ' + error.message);
+    }
+}
+
+function selectFacility(facilityId) {
+    selectedFacilityId = facilityId;
+    document.querySelectorAll('.facility-card').forEach(card => {
+        card.classList.toggle('selected', card.dataset.facilityId === facilityId);
+    });
+    loadAvailability();
+}
+
 async function loadAvailability() {
     const bookingDate = document.getElementById('bookingDate').value;
-    selectedFacilityId = 'default-facility-id';
     const timeSlotContainer = document.getElementById('timeSlotContainer');
     const errorMessage = document.getElementById('errorMessage');
+
+    if (!selectedFacilityId) {
+        showError(errorMessage, 'Valitse ensin laite, jonka haluat varata.');
+        return;
+    }
 
     try {
         const slots = await apiClient.getAvailability(selectedFacilityId, new Date(bookingDate));

@@ -37,6 +37,7 @@ async function handleResidentLogin(e) {
         if (response && response.token) {
             apiClient.setToken(response.token);
             localStorage.setItem('residentId', response.residentId);
+            localStorage.setItem('residentToken', response.token);
             window.location.href = '/booking.html';
         } else {
             showError(errorMessage, response?.errorMessage || 'Kirjautuminen epäonnistui');
@@ -62,6 +63,7 @@ async function handleAdminLogin(e) {
         } else if (response && response.token) {
             apiClient.setToken(response.token);
             localStorage.setItem('adminId', response.adminId);
+            localStorage.setItem('adminToken', response.token);
             window.location.href = '/admin-dashboard.html';
         } else {
             showError(errorMessage, response?.errorMessage || 'Kirjautuminen epäonnistui');
@@ -80,6 +82,7 @@ async function handleTwoFactorVerification() {
 
         if (response && response.token) {
             apiClient.setToken(response.token);
+            localStorage.setItem('adminToken', response.token);
             window.location.href = '/admin-dashboard.html';
         } else {
             showError(errorMessage, 'Virheellinen 2FA-koodi');
@@ -122,15 +125,22 @@ function handleLogout() {
     apiClient.clearToken();
     localStorage.removeItem('residentId');
     localStorage.removeItem('adminId');
+    localStorage.removeItem('residentToken');
+    localStorage.removeItem('adminToken');
     window.location.href = '/index.html';
 }
 
 function checkAuthentication() {
     const token = localStorage.getItem('token');
+    const adminToken = localStorage.getItem('adminToken');
     const currentPath = window.location.pathname;
     const publicPages = ['/index.html', '/activation.html', '/admin-login.html', '/'];
 
-    if (!token && !publicPages.some(page => currentPath.includes(page))) {
+    if (!token && !adminToken && !publicPages.some(page => currentPath.includes(page))) {
+        if (currentPath.includes('admin-')) {
+            window.location.href = '/admin-login.html';
+            return;
+        }
         window.location.href = '/index.html';
     }
 }

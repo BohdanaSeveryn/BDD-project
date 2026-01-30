@@ -38,6 +38,8 @@ public interface IAdminService
     Task<AdminBookingDetails?> GetBookingDetailsAsync(Guid bookingId);
     Task<bool> DeleteResidentAsync(Guid residentId);
     Task<bool> UpdateResidentAsync(Guid residentId, UpdateResidentRequest request);
+    Task<GenerateTimeSlotsResponse?> GenerateDailyTimeSlotsAsync(Guid facilityId, DateTime date, TimeOnly startTime, TimeOnly endTime);
+    Task<List<FacilityResponse>> GetFacilitiesAsync();
 }
 
 public interface IEmailService

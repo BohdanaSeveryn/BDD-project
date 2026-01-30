@@ -11,6 +11,10 @@ public class AdminService : IAdminService
     private readonly AppDbContext _context;
     private readonly PasswordHasher _passwordHasher;
 
+    private static readonly TimeOnly DailyStartTime = new(7, 0);
+    private static readonly TimeOnly DailyEndTime = new(21, 0);
+    private const int SlotDurationHours = 2;
+
     public AdminService(AppDbContext context, PasswordHasher passwordHasher)
     {
         _context = context;
@@ -100,5 +104,98 @@ public class AdminService : IAdminService
 
         await _context.SaveChangesAsync();
         return true;
+    }
+
+    public async Task<GenerateTimeSlotsResponse?> GenerateDailyTimeSlotsAsync(Guid facilityId, DateTime date, TimeOnly startTime, TimeOnly endTime)
+    {
+        var facility = await _context.Facilities.FindAsync(facilityId);
+        if (facility == null)
+            return null;
+
+        var bookingDate = date.Date;
+
+        if (startTime < DailyStartTime || endTime > DailyEndTime || startTime >= endTime)
+            return null;
+
+        var totalDurationHours = endTime.Hour - startTime.Hour;
+        if (totalDurationHours <= 0 || totalDurationHours % SlotDurationHours != 0)
+            return null;
+
+        var existingSlots = await _context.TimeSlots
+            .Where(t => t.FacilityId == facilityId && t.Date == bookingDate)
+            .ToListAsync();
+
+        var createdSlots = new List<TimeSlot>();
+
+        for (var hour = startTime.Hour; hour < endTime.Hour; hour += SlotDurationHours)
+        {
+            var start = new TimeOnly(hour, 0);
+            var end = new TimeOnly(hour + SlotDurationHours, 0);
+
+            var exists = existingSlots.Any(s => s.StartTime == start && s.EndTime == end);
+            if (exists)
+                continue;
+
+            var slot = new TimeSlot
+            {
+                Id = Guid.NewGuid(),
+                FacilityId = facilityId,
+                Date = bookingDate,
+                StartTime = start,
+                EndTime = end,
+                Status = "Available",
+                Color = "green",
+                CreatedAt = DateTime.UtcNow
+            };
+
+            createdSlots.Add(slot);
+        }
+
+        if (createdSlots.Count > 0)
+        {
+            await _context.TimeSlots.AddRangeAsync(createdSlots);
+            await _context.SaveChangesAsync();
+        }
+
+        var allSlots = existingSlots.Concat(createdSlots)
+            .Where(s => s.StartTime >= DailyStartTime && s.EndTime <= DailyEndTime)
+            .OrderBy(s => s.StartTime)
+            .Select(s => new AdminTimeSlotResponse
+            {
+                Id = s.Id,
+                Date = s.Date,
+                StartTime = s.StartTime,
+                EndTime = s.EndTime,
+                Status = s.Status,
+                Color = s.Color
+            })
+            .ToList();
+
+        var totalExpectedSlots = (endTime.Hour - startTime.Hour) / SlotDurationHours;
+
+        return new GenerateTimeSlotsResponse
+        {
+            FacilityId = facilityId,
+            Date = bookingDate,
+            CreatedCount = createdSlots.Count,
+            SkippedCount = Math.Max(0, totalExpectedSlots - createdSlots.Count),
+            Slots = allSlots
+        };
+    }
+
+    public async Task<List<FacilityResponse>> GetFacilitiesAsync()
+    {
+        var facilities = await _context.Facilities
+            .Where(f => f.IsAvailable)
+            .OrderBy(f => f.Name)
+            .ToListAsync();
+
+        return facilities.Select(f => new FacilityResponse
+        {
+            Id = f.Id,
+            Name = f.Name,
+            Description = f.Description,
+            Icon = f.Icon
+        }).ToList();
     }
 }

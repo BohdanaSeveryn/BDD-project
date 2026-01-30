@@ -26,6 +26,20 @@
         <div class="admin-controls">
             <input type="date" id="filterDate" class="date-picker">
             <button id="refreshBtn" class="btn btn-secondary">Päivitä</button>
+            <button id="generateSlotsBtn" class="btn btn-primary">Luo aikavälit</button>
+        </div>
+
+        <div class="facility-section">
+            <h3>Valitse laite</h3>
+            <div id="facilityContainer" class="facility-grid">
+                <!-- Facilities will be loaded here -->
+            </div>
+        </div>
+
+        <div class="calendar-grid">
+            <div id="adminTimeSlotContainer" class="time-slots">
+                <!-- Admin time slots will be loaded here -->
+            </div>
         </div>
 
         <div id="bookingsTable" class="table-container">
@@ -50,9 +64,31 @@
         <div id="successMessage" class="success-message"></div>
     </div>
 
-    <script src="js/api-client.js"></script>
-    <script src="js/auth.js"></script>
-    <script src="js/admin.js"></script>
+    <div id="timeSlotModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="timeSlotModalClose">&times;</span>
+            <h3>Luo aikavälit</h3>
+            <form id="timeSlotForm">
+                <div class="form-group">
+                    <label for="slotDate">Päivä</label>
+                    <input type="date" id="slotDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="slotStartTime">Alkuaika</label>
+                    <input type="time" id="slotStartTime" value="07:00" required>
+                </div>
+                <div class="form-group">
+                    <label for="slotEndTime">Loppuaika</label>
+                    <input type="time" id="slotEndTime" value="21:00" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Luo aikavälit</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/api-client.js?v=5"></script>
+    <script src="js/auth.js?v=5"></script>
+    <script src="js/admin.js?v=5"></script>
 </body>
 
 </html>
